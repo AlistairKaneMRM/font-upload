@@ -1,0 +1,15 @@
+{
+  "family": "Test Font CI",
+  "files": [
+    { "filename": "TestFont.otf", "weight": 400, "style": "normal" }
+  ],
+  "restrictions": {
+    "brands": [1],
+    "markets": [1]
+  },
+  "metadata": {
+    "license_ref": "ci-smoke-test-not-for-production",
+    "requested_by": "phase-5-ci-test",
+    "ticket": "FONTS-CI"
+  }
+}
