@@ -19,3 +19,12 @@ targets:
       - src/data/fonts.css
     prompt: prompts/toolkit-content-management.md
     reference_pr: https://github.com/MRMBRAND/toolkit-content-management/pull/128
+
+  - repo: MRMBRAND/rendering-service
+    default_branch: master
+    # No fonts_dir — binaries live on /Library/Fonts on the Mac minis,
+    # deployed separately. This repo only declares the data.
+    editable_files:
+      - src/fontData.ts
+    prompt: prompts/rendering-service.md
+    reference_pr: https://github.com/MRMBRAND/rendering-service/pull/120

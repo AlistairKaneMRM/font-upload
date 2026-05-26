@@ -45,17 +45,20 @@ function shellQuote(s) {
   return "'" + String(s).replace(/'/g, "'\\''") + "'";
 }
 
-const fields = {
+const required = {
   TARGET_REPO: target.repo,
   DEFAULT_BRANCH: target.default_branch,
-  FONTS_DIR: target.fonts_dir,
   PROMPT_PATH: target.prompt,
 };
 
-for (const [key, value] of Object.entries(fields)) {
+for (const [key, value] of Object.entries(required)) {
   if (value === undefined || value === null) {
-    console.error(`target ${targetName} is missing field: ${key}`);
+    console.error(`target ${targetName} is missing required field: ${key}`);
     process.exit(1);
   }
   console.log(`${key}=${shellQuote(value)}`);
 }
+
+// fonts_dir is optional — targets like rendering-service don't store font
+// binaries in their repo.
+console.log(`FONTS_DIR=${shellQuote(target.fonts_dir || "")}`);

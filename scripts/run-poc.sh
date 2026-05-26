@@ -55,8 +55,9 @@ gh repo clone "$TARGET_REPO" "$TARGET_DIR" -- --depth 1 --branch "$DEFAULT_BRANC
 cd "$TARGET_DIR"
 git checkout -b "$BRANCH" >/dev/null
 
-echo "==> Copying font binaries into $FONTS_DIR/:"
-node - "$CONFIG_PATH" "$CONFIG_DIR" "$FONTS_DIR" <<'NODE'
+if [[ -n "$FONTS_DIR" ]]; then
+  echo "==> Copying font binaries into $FONTS_DIR/:"
+  node - "$CONFIG_PATH" "$CONFIG_DIR" "$FONTS_DIR" <<'NODE'
 const fs = require('fs');
 const path = require('path');
 const [configPath, configDir, fontsDir] = process.argv.slice(2);
@@ -69,6 +70,9 @@ for (const f of cfg.files) {
   console.log('    ' + f.filename);
 }
 NODE
+else
+  echo "==> No fonts_dir for this target — binaries are not stored in repo (deployed separately)."
+fi
 
 PROMPT_FILE="$WORKDIR/prompt.md"
 {
@@ -76,7 +80,11 @@ PROMPT_FILE="$WORKDIR/prompt.md"
   printf '\n\n---\n\n'
   cat "$REPO_ROOT/$PROMPT_PATH"
   printf '\n\n---\n\n## This rollout\n\n'
-  printf 'The font binaries have already been copied into `%s/`. Your working directory is the cloned repo.\n\n' "$FONTS_DIR"
+  if [[ -n "$FONTS_DIR" ]]; then
+    printf 'The font binaries have already been copied into `%s/`. Your working directory is the cloned repo.\n\n' "$FONTS_DIR"
+  else
+    printf 'Binaries are NOT stored in this repo. Your working directory is the cloned repo.\n\n'
+  fi
   printf 'The `font.config.json` for this rollout:\n\n'
   printf '```json\n'
   cat "$CONFIG_PATH"
