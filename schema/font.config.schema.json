@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AlistairKaneMRM/font-upload/schema/font.config.schema.json",
+  "title": "Font config",
+  "description": "Metadata for a single font-family rollout request. Lives alongside the font binary in incoming/<font-slug>/font.config.json.",
+  "type": "object",
+  "required": ["family", "files", "restrictions"],
+  "additionalProperties": false,
+  "properties": {
+    "family": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable font family name, as it should appear in pickers (e.g. \"Knockout HTF50 Welterweight\")."
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "One entry per font file in this rollout. Multiple entries are used when a family ships multiple weights/styles at once.",
+      "items": {
+        "type": "object",
+        "required": ["filename", "weight", "style"],
+        "additionalProperties": false,
+        "properties": {
+          "filename": {
+            "type": "string",
+            "pattern": "\\.(otf|ttf|woff|woff2)$",
+            "description": "Font binary filename, must exist alongside this config in the same incoming/ subdirectory."
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 900,
+            "multipleOf": 100
+          },
+          "style": {
+            "enum": ["normal", "italic"]
+          }
+        }
+      }
+    },
+    "restrictions": {
+      "type": "object",
+      "required": ["brands", "markets"],
+      "additionalProperties": true,
+      "description": "Which brands and markets are allowed to use this font. Additional restriction dimensions can be added as new keys without a schema change.",
+      "properties": {
+        "brands": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 1 },
+          "description": "Numeric brand IDs from hyble. The requester looks these up and supplies them directly."
+        },
+        "markets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "integer", "minimum": 1 },
+          "description": "Numeric market IDs from hyble. The requester looks these up and supplies them directly."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "license_ref": { "type": "string" },
+        "requested_by": { "type": "string" },
+        "ticket": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "family": "Example Font",
+  "files": [
+    { "filename": "ExampleFont-Regular.otf", "weight": 400, "style": "normal" },
+    { "filename": "ExampleFont-Bold.otf", "weight": 700, "style": "normal" }
+  ],
+  "restrictions": {
+    "brands": [1, 2],
+    "markets": [1]
+  },
+  "metadata": {
+    "license_ref": "placeholder-not-a-real-font",
+    "requested_by": "scaffold",
+    "ticket": "FONTS-0"
+  }
+}

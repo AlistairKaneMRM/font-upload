@@ -1,0 +1,27 @@
+name: Validate incoming font request
+
+on:
+  pull_request:
+    paths:
+      - "incoming/**"
+      - "schema/**"
+      - "scripts/validate-config.js"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Validate incoming font configs
+        run: node scripts/validate-config.js
