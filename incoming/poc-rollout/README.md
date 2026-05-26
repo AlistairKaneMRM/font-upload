@@ -34,9 +34,11 @@ Drop a real font here to exercise the Phase 2 POC against `MRMBRAND/toolkit-cont
 From the repo root, once your font + config are in place:
 
 ```sh
-scripts/run-poc.sh incoming/poc-rollout/font.config.json
+scripts/run-poc.sh <target-name> incoming/poc-rollout/font.config.json
 ```
 
-The script clones `MRMBRAND/toolkit-content-upload` into a temp directory, branches off `develop`, copies the binaries in, invokes the agent, and prints the resulting diff. It does **not** push or open a PR — review the diff first.
+`<target-name>` matches a target in [`targets.yaml`](../../targets.yaml), e.g. `toolkit-content-upload` or `toolkit-content-management`.
+
+The script clones the chosen target repo into a temp directory, branches off the target's default branch, copies the binaries in, invokes the agent, and prints the resulting diff. It does **not** push or open a PR — review the diff first.
 
 Once you're happy with the diff, the script prints the exact `git commit && git push && gh pr create` commands to run.

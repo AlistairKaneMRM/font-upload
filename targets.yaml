@@ -10,3 +10,12 @@ targets:
       - src/fonts.css
     prompt: prompts/toolkit-content-upload.md
     reference_pr: https://github.com/MRMBRAND/toolkit-content-upload/pull/19
+
+  - repo: MRMBRAND/toolkit-content-management
+    default_branch: main
+    fonts_dir: public/fonts
+    editable_files:
+      - src/data/fonts.ts
+      - src/data/fonts.css
+    prompt: prompts/toolkit-content-management.md
+    reference_pr: https://github.com/MRMBRAND/toolkit-content-management/pull/128
