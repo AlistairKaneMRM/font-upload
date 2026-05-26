@@ -1,0 +1,16 @@
+{
+  "family": "Test Good Font",
+  "files": [
+    { "filename": "TestGoodFont-Regular.otf", "weight": 400, "style": "normal" },
+    { "filename": "TestGoodFont-Italic.otf", "weight": 400, "style": "italic" }
+  ],
+  "restrictions": {
+    "brands": [101, 102],
+    "markets": [1, 7]
+  },
+  "metadata": {
+    "license_ref": "ci-smoke-test-not-a-real-font",
+    "requested_by": "scaffold-smoke-test",
+    "ticket": "FONTS-TEST"
+  }
+}
