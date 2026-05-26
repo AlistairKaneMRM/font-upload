@@ -4,7 +4,8 @@
   "private": true,
   "description": "Orchestrator for adding new fonts across the company's stack.",
   "scripts": {
-    "validate": "node scripts/validate-config.js"
+    "validate": "node scripts/validate-config.js",
+    "rollout": "node coordinator/index.js"
   },
   "dependencies": {
     "ajv": "^8.17.1",

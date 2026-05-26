@@ -33,7 +33,26 @@ targets.yaml            # per-target-repo manifest
 
 ```sh
 npm install
-node scripts/validate-config.js
+npm run validate
 ```
 
-Walks every `font.config.json` under `incoming/` and reports schema or allow-list violations.
+Walks every `font.config.json` under `incoming/` and reports schema violations.
+
+## Running a rollout from your laptop
+
+The coordinator drives every target in `targets.yaml` in parallel from a single `font.config.json`. By default it runs in **dry-run** mode — it clones each target, lets the agent edit files, then stops at the diff for inspection without pushing anything.
+
+```sh
+# Dry-run against all targets
+npm run rollout -- incoming/poc-rollout/font.config.json
+
+# Push branches and open PRs
+npm run rollout -- --execute incoming/poc-rollout/font.config.json
+
+# Run against one target only
+npm run rollout -- --target=toolkit-content-upload incoming/poc-rollout/font.config.json
+```
+
+Output is a JSON summary on stdout (PR URLs, statuses, agent notes). Failed/stopped targets keep their working directories around for debugging; successful ones get cleaned up unless `--keep-workdirs` is passed.
+
+For tuning a single target's prompt in isolation, use [`scripts/run-poc.sh`](scripts/run-poc.sh) — same agent, more verbose output, single target only.
