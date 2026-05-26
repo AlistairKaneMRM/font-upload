@@ -39,10 +39,14 @@ jobs:
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
 
-      - name: Configure git identity for downstream commits
+      - name: Configure git identity + credential helper for downstream pushes
+        env:
+          GH_TOKEN: ${{ secrets.FONT_ROLLOUT_TOKEN }}
         run: |
           git config --global user.email "font-upload-rollout@users.noreply.github.com"
           git config --global user.name "font-upload-rollout"
+          # Wire git's HTTPS auth on github.com through `gh`, which uses GH_TOKEN.
+          gh auth setup-git
 
       - name: Find newly-added configs
         id: find
