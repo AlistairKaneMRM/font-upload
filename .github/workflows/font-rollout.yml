@@ -1,0 +1,104 @@
+name: Font rollout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "incoming/**"
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: "Diff base ref (default: HEAD~1)"
+        required: false
+        default: "HEAD~1"
+
+# Prevent two rollouts from racing on overlapping commits.
+concurrency:
+  group: font-rollout
+  cancel-in-progress: false
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Find newly-added configs
+        id: find
+        run: |
+          BASE="${{ github.event.before || inputs.base_ref || 'HEAD~1' }}"
+          # github.event.before is all zeros on the very first push to a branch.
+          if [[ "$BASE" == "0000000000000000000000000000000000000000" ]]; then
+            BASE="$(git rev-list --max-parents=0 HEAD)"
+          fi
+          echo "Diffing against: $BASE"
+
+          CONFIGS=$(scripts/find-changed-configs.sh "$BASE" || true)
+          if [[ -z "$CONFIGS" ]]; then
+            echo "no_configs=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::No new font.config.json files in this push — nothing to roll out."
+            exit 0
+          fi
+
+          echo "Found configs to roll out:"
+          echo "$CONFIGS"
+          {
+            echo "configs<<EOF"
+            echo "$CONFIGS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate configs
+        if: steps.find.outputs.no_configs != 'true'
+        run: npm run validate
+
+      - name: Run rollouts
+        if: steps.find.outputs.no_configs != 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.FONT_ROLLOUT_TOKEN }}
+          CLAUDE_CODE_SIMPLE: "1"
+        run: |
+          mkdir -p rollout-results
+          had_error=0
+          while IFS= read -r config; do
+            [[ -z "$config" ]] && continue
+            slug=$(basename "$(dirname "$config")")
+            echo "::group::Rollout: $slug ($config)"
+            if npm run rollout --silent -- --execute "$config" > "rollout-results/$slug.json" 2> "rollout-results/$slug.stderr.log"; then
+              echo "rollout succeeded"
+            else
+              echo "::error::Rollout failed for $slug — see artifact for details."
+              had_error=1
+            fi
+            echo "----- summary ($slug.json) -----"
+            cat "rollout-results/$slug.json" || true
+            echo "----- stderr ($slug.stderr.log) -----"
+            cat "rollout-results/$slug.stderr.log" || true
+            echo "::endgroup::"
+          done <<< "${{ steps.find.outputs.configs }}"
+          exit $had_error
+
+      - name: Upload rollout summaries
+        if: always() && steps.find.outputs.no_configs != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollout-summary
+          path: rollout-results/
+          if-no-files-found: warn
