@@ -46,17 +46,15 @@
       "properties": {
         "brands": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": { "type": "integer", "minimum": 1 },
-          "description": "Numeric brand IDs from hyble. The requester looks these up and supplies them directly."
+          "description": "Numeric brand IDs from hyble. Empty array means no brand restriction (font is available to all brands)."
         },
         "markets": {
           "type": "array",
-          "minItems": 1,
           "uniqueItems": true,
           "items": { "type": "integer", "minimum": 1 },
-          "description": "Numeric market IDs from hyble. The requester looks these up and supplies them directly."
+          "description": "Numeric market IDs from hyble. Empty array means no market restriction (font is available in all markets)."
         }
       }
     },

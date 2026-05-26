@@ -1,13 +1,12 @@
-# Per-repo manifest for the rollout fan-out. Filled in during Phase 3.
-# Each entry: GitHub slug, default branch, where the font binary goes in that
-# repo, which files the agent is allowed to touch, and a reference PR for the
-# agent to mimic.
-targets: []
-# Example entry shape (uncomment and fill in during Phase 3):
-# - repo: AlistairKaneMRM/toolkit-content-upload
-#   default_branch: main
-#   fonts_dir: public/fonts
-#   editable_files:
-#     - src/fonts.js
-#     - src/fonts.css
-#   reference_pr: https://github.com/AlistairKaneMRM/toolkit-content-upload/pull/284
+# Per-repo manifest for the rollout fan-out. Each entry tells the coordinator
+# where to clone, where the binaries go, which files the agent is allowed to
+# touch, and which past PR to mimic.
+targets:
+  - repo: MRMBRAND/toolkit-content-upload
+    default_branch: develop
+    fonts_dir: public/fonts
+    editable_files:
+      - src/fonts.js
+      - src/fonts.css
+    prompt: prompts/toolkit-content-upload.md
+    reference_pr: https://github.com/MRMBRAND/toolkit-content-upload/pull/19

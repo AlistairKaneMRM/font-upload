@@ -4,3 +4,7 @@ dist/
 .env
 .env.local
 .DS_Store
+
+# Local POC artifacts — only the README is tracked
+incoming/poc-rollout/*
+!incoming/poc-rollout/README.md
