@@ -1,0 +1,15 @@
+{
+  "family": "Test Fancy Font",
+  "files": [
+    { "filename": "TestFancyFont.otf", "weight": 400, "style": "normal" }
+  ],
+  "restrictions": {
+    "brands": [1],
+    "markets": [2]
+  },
+  "metadata": {
+    "license_ref": "test-not-for-production",
+    "requested_by": "alistair.kane@hyble.tech",
+    "ticket": "FONTS-TEST"
+  }
+}
